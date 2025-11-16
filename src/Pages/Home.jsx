@@ -1,66 +1,40 @@
+import { useEffect, useState } from "react";
 import { MovieCard } from "../Components/MovieCard";
+import { getPopularMovies, searchMovies } from "../Services/Api";
 
 export const Home = () => {
-  const Movie = [
-    {
-      id: 1,
-      title: "Movie Meletria",
-      date_Move: "10-3-2020",
-      image:
-        "https://plus.unsplash.com/premium_photo-1677609987846-0e6b7f196983?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHx8",
-    },
-    {
-      id: 2,
-      title: "Movie Meletria",
-      date_Move: "10-3-2020",
-      image:
-        "https://images.unsplash.com/photo-1664487752205-4ad3ff14744f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIzfHx8ZW58MHx8fHx8",
-    },
+  const [Movie, setMovie] = useState([]);
+  const [searchquery, setSearchQuery] = useState("");
 
-    {
-      id: 3,
-      title: "Movie Meletria",
-      date_Move: "10-3-2020",
-      image:
-        "https://images.unsplash.com/photo-1665060221922-aff438b69d36?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDM3fHx8ZW58MHx8fHx8",
-    },
-    {
-      id: 4,
-      title: "Movie Meletria",
-      date_Move: "10-3-2020",
-      image:
-        "https://plus.unsplash.com/premium_photo-1677609987846-0e6b7f196983?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHx8",
-    },
-    {
-      id: 5,
-      title: "Movie Meletria",
-      date_Move: "10-3-2020",
-      image:
-        "https://plus.unsplash.com/premium_photo-1677609987846-0e6b7f196983?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHx8",
-    },
-    {
-      id: 6,
-      title: "Movie Meletria",
-      date_Move: "10-3-2020",
-      image:
-        "https://plus.unsplash.com/premium_photo-1677609987846-0e6b7f196983?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHx8",
-    },
-    {
-      id: 7,
-      title: "Movie Meletria",
-      date_Move: "10-3-2020",
-      image:
-        "https://plus.unsplash.com/premium_photo-1677609987846-0e6b7f196983?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDIwfHx8ZW58MHx8fHx8",
-    },
-  ];
+  useEffect(() => {
+    const getAPIFetch = async () => {
+      try {
+        const getPopular = await getPopularMovies();
+        console.log(getPopular);
+        setMovie(getPopular);
+      } catch (error) {
+        console.error("failer fetcha data");
+      }
+    };
+    getAPIFetch();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const searchqueryPopular = await searchMovies(searchquery);
+    setMovie(searchqueryPopular);
+  };
+
   return (
     <>
       <div className="flex pt-4">
-        <form className="p-4 flex w-full">
+        <form onSubmit={handleSubmit} className="p-4 flex w-full">
           <input
             className="border flex-1 mr-7 rounded-lg outline-0 text-xl p-3"
             type="text"
             placeholder="Search Movie Favorite..."
+            value={searchquery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
           <button
             type="submit"
