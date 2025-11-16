@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { MovieCard } from "../Components/MovieCard";
 import { getPopularMovies, searchMovies } from "../Services/Api";
+import toast from "react-hot-toast";
 
 export const Home = () => {
   const [Movie, setMovie] = useState([]);
   const [searchquery, setSearchQuery] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState("");
 
   useEffect(() => {
     const getAPIFetch = async () => {
@@ -21,8 +24,15 @@ export const Home = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const searchqueryPopular = await searchMovies(searchquery);
-    setMovie(searchqueryPopular);
+    if (!searchquery || searchquery.trim() === "") {
+      toast.error("Please search You're Favorite Movie");
+      return;
+    }
+
+    try {
+      const searchqueryPopular = await searchMovies(searchquery);
+      setMovie(searchqueryPopular);
+    } catch (error) {}
   };
 
   return (
